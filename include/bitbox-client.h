@@ -94,5 +94,7 @@ int reset_device(void);
 // Get the device's version number
 //int get_version_number(char* serial_version_out);
 
+// Send any command that doesn't yet have a own function
+int send_any_command(const char *cmd, const char *val);
 
 #endif

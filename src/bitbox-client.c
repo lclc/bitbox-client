@@ -153,6 +153,14 @@ int init(void)
     return true;
 }
 
+int send_any_command(const char *cmd, const char *val)
+{
+    api_format_send_cmd(cmd,val,PASSWORD_STAND);
+    if (api_result_has("error")) {
+        return false;
+    }
+    return true;
+}
 
 int reset_device(void)
 {
@@ -191,7 +199,7 @@ int set_password_on_device(const char* password)
         return false;
     }
 
-    api_format_send_cmd("password", password, PASSWORD_STAND);
+    api_format_send_cmd("password", password, PASSWORD_NONE);
     if (api_result_has("error")) {
         return false;
     }
