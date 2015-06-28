@@ -1,0 +1,4 @@
+@PACKAGE_INIT@ 
+
+set_and_check(BITBOX-CLIENT_INCLUDE_DIRS "@PACKAGE_BITBOX-CLIENT_INCLUDE_DIRS@")
+include("${CMAKE_CURRENT_LIST_DIR}/bitbox-clientTargets.cmake")
