@@ -64,7 +64,11 @@ char *aes_cbc_b64_encrypt(const unsigned char *in, int inlen, int *out_b64len,
     }
 
     // Make a random initialization vector
-    random_bytes((uint8_t *)iv, N_BLOCK, 0);
+    if (random_bytes((uint8_t *)iv, N_BLOCK, 0) == ERROR) {
+        commander_fill_report("random", FLAG_ERR_ATAES, ERROR);
+        +        memset(inpad, 0, inpadlen);
+        return NULL;
+    }
     memcpy(enc_cat, iv, N_BLOCK);
 
     // CBC encrypt multiple blocks
@@ -76,6 +80,7 @@ char *aes_cbc_b64_encrypt(const unsigned char *in, int inlen, int *out_b64len,
     char *b64;
     b64 = base64(enc_cat, inpadlen + N_BLOCK, &b64len);
     *out_b64len = b64len;
+    memset(inpad, 0, inpadlen);
     return b64;
 }
 
@@ -84,6 +89,8 @@ char *aes_cbc_b64_encrypt(const unsigned char *in, int inlen, int *out_b64len,
 char *aes_cbc_b64_decrypt(const unsigned char *in, int inlen, int *decrypt_len,
                           PASSWORD_ID id)
 {
+    *decrypt_len = 0;
+
     if (!in || inlen == 0) {
         return NULL;
     }
@@ -91,8 +98,7 @@ char *aes_cbc_b64_decrypt(const unsigned char *in, int inlen, int *decrypt_len,
     // Unbase64
     int ub64len;
     unsigned char *ub64 = unbase64((char *)in, inlen, &ub64len);
-    if (!ub64 || (ub64len % N_BLOCK)) {
-        decrypt_len = 0;
+    if (!ub64 || (ub64len % N_BLOCK) || ub64len < N_BLOCK) {
         free(ub64);
         return NULL;
     }
@@ -109,10 +115,13 @@ char *aes_cbc_b64_decrypt(const unsigned char *in, int inlen, int *decrypt_len,
 
     // Strip PKCS7 padding
     int padlen = dec_pad[ub64len - N_BLOCK - 1];
+    if (ub64len - N_BLOCK - padlen <= 0) {
+       memset(dec_pad, 0, sizeof(dec_pad));
+       return NULL;
+    }
     char *dec = malloc(ub64len - N_BLOCK - padlen + 1); // +1 for null termination
     if (!dec) {
         memset(dec_pad, 0, sizeof(dec_pad));
-        decrypt_len = 0;
         return NULL;
     }
     memcpy(dec, dec_pad, ub64len - N_BLOCK - padlen);
