@@ -35,7 +35,7 @@
 
 #define TO_UINT8_HEX_BUF_LEN 2048
 
-
+void utils_clear_buffers(void);
 uint8_t *utils_hex_to_uint8(const char *str);
 char *utils_uint8_to_hex(const uint8_t *bin, size_t l);
 

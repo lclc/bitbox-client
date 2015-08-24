@@ -214,7 +214,7 @@ int set_communication_password(const char* password)
     {
         return false;
     }
-    if(memory_write_aeskey(tests_pwd, 4, PASSWORD_STAND) == ERROR)
+    if(memory_write_aeskey(tests_pwd, 4, PASSWORD_STAND) == STATUS_ERROR)
     {
         return false;
     } else{

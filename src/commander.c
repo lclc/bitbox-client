@@ -64,9 +64,9 @@ char *aes_cbc_b64_encrypt(const unsigned char *in, int inlen, int *out_b64len,
     }
 
     // Make a random initialization vector
-    if (random_bytes((uint8_t *)iv, N_BLOCK, 0) == ERROR) {
-        commander_fill_report("random", FLAG_ERR_ATAES, ERROR);
-        +        memset(inpad, 0, inpadlen);
+    if (random_bytes((uint8_t *)iv, N_BLOCK, 0) == STATUS_ERROR) {
+        commander_fill_report("random", FLAG_ERR_ATAES, STATUS_ERROR);
+        memset(inpad, 0, inpadlen);
         return NULL;
     }
     memcpy(enc_cat, iv, N_BLOCK);
@@ -156,7 +156,7 @@ static void commander_fill_report_len(const char *attr, const char *val, int err
     } else {
         strcat(json_report, " \"");
         strcat(json_report, attr);
-        if (err == ERROR) {
+        if (err == STATUS_ERROR) {
             strcat(json_report, "\":{ \"error\": ");
         } else {
             strcat(json_report, "\": ");
@@ -171,7 +171,7 @@ static void commander_fill_report_len(const char *attr, const char *val, int err
         }
 
         // Add closing '}'
-        if (err == ERROR) {
+        if (err == STATUS_ERROR) {
             strcat(json_report, " } }");
         } else {
             strcat(json_report, " }");

@@ -29,6 +29,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "random.h"
+#include "flags.h"
 
 static FILE *f;
 static int f_open = 0;
@@ -43,7 +44,7 @@ int random_bytes(uint8_t *buf, uint32_t len, uint8_t update_seed)
 {
     (void) update_seed;
     if (fread(buf, 1, len, f) != len) {
-        return 1; // error
+        return STATUS_ERROR; // error
     }
-    return 0;
+    return STATUS_SUCCESS;
 }
