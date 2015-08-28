@@ -25,7 +25,6 @@
 */
 
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "bitbox-client.h"
 #include "utest.h"
@@ -33,7 +32,7 @@
 
 int U_TESTS_RUN = 0;
 int U_TESTS_FAIL = 0;
-
+ 
 static void test_reset_device(void)
 {
     reset_device();
@@ -43,6 +42,17 @@ static void test_set_name(void)
 {
     const char name[] = "testname";
     u_assert_int_eq(set_name(name),0);
+}
+
+
+static void test_get_name(void)
+{
+    const char name[] = "testname";
+    u_assert_int_eq(set_name(name),0);
+    
+    char name_out[9];
+    u_assert_int_eq(get_name(name_out),0);
+    u_assert_str_eq(name,name_out);
 }
 
 int main(void)
@@ -56,6 +66,7 @@ int main(void)
 
     u_run_test(test_reset_device);
     u_run_test(test_set_name);
+    u_run_test(test_get_name);
 
 
     if (!U_TESTS_FAIL) {

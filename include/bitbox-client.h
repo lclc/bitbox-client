@@ -73,7 +73,7 @@ int reset_device(void);
 // The true RNG mode updates a seed value written to the chip's EEPROM,
 // which has a specified minimum lifespan of 100,000 write cycles.
 // The pseudo RNG mode derives numbers using this seed and does not affect lifespan.
-//int get_random_number(int mode, char random_out);
+int get_random_number(int mode, char random_out);
 
 // Encrypt or decrypt text (AES 256 CBC)
 //Type:  encrypt,decrypt, password, or xpub.
@@ -86,13 +86,13 @@ int reset_device(void);
 //int decrypt_text(char* text);
 
 // Toggle the LED
-//int toggleLED(void);
+int toggleLED(void);
 
 // Get the device's serial number
 //int get_serial_number(char* serial_number_out);
 
 // Get the device's version number
-//int get_version_number(char* serial_version_out);
+//int get_version_number(char* version_out);
 
 // Send any command that doesn't yet have a own function
 int send_any_command(const char *cmd, const char *val);

@@ -174,6 +174,11 @@ int reset_device(void)
 
 int set_name(const char* name)
 {
+    if(strlen(name) < 4)
+    {
+        return false;
+    }
+
     api_format_send_cmd("name", name, PASSWORD_STAND);
      if (api_result_has("error")) {
          return false;
@@ -192,6 +197,7 @@ int get_name(char* name_out)
     return true;
 }
 
+
 int set_password_on_device(const char* password)
 {
     if(set_communication_password(password) == false)
@@ -207,6 +213,7 @@ int set_password_on_device(const char* password)
     return true;
 }
 
+
 int set_communication_password(const char* password)
 {
     // A password is required that has a length of at least 4 characters.
@@ -220,4 +227,64 @@ int set_communication_password(const char* password)
     } else{
         return true;
     }
+}
+
+
+int get_random_number(int mode, char random_out)
+{
+    (void) random_out;
+    if(mode == 1)
+    {
+        api_format_send_cmd("random", "true", PASSWORD_STAND);
+    }
+    else if(mode == 2)
+    {
+        api_format_send_cmd("random", "pseudo", PASSWORD_STAND);
+    }
+    else{
+        return false;
+    }
+    if (api_result_has("error")) {
+        return false;
+    }
+    random_out = api_read_value(CMD_random_)[0];
+    return true;
+}
+
+
+int toggleLED(void)
+{
+    api_format_send_cmd("led", "toggle", PASSWORD_STAND);
+    if (api_result_has("error")) {
+        return false;;
+    }
+    return true;
+}
+
+
+int get_serial_number(char* serial_number_out)
+{
+    (void) serial_number_out;
+    api_format_send_cmd("device", "serial", PASSWORD_STAND);
+    if (api_result_has("error")) {
+        return false;
+    }
+//lclc    serial_number_out = (char*)api_read_value(CMD_name_);
+    int len;
+    serial_number_out = (char*) jsmn_get_value_string(utils_read_decrypted_report(), "serial", &len);
+    return true;
+}
+
+
+int get_version_number(char* version_out)
+{
+    (void) version_out;
+    api_format_send_cmd("device", "version", PASSWORD_STAND);
+    if (api_result_has("error")) {
+        return false;
+    }
+//lclc    version_out = (char*)api_read_value(CMD_name_);
+    int len;
+    version_out = (char*) jsmn_get_value_string(utils_read_decrypted_report(), "version", &len);
+    return true;
 }
