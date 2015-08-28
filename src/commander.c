@@ -28,9 +28,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "commander.h"
-#include "random.h"
 #include "base64.h"
 #include "flags.h"
 #include "aes.h"
@@ -64,10 +64,10 @@ char *aes_cbc_b64_encrypt(const unsigned char *in, int inlen, int *out_b64len,
     }
 
     // Make a random initialization vector
-    if (random_bytes((uint8_t *)iv, N_BLOCK, 0) == STATUS_ERROR) {
-        commander_fill_report("random", FLAG_ERR_ATAES, STATUS_ERROR);
-        memset(inpad, 0, inpadlen);
-        return NULL;
+    srand(time(NULL));
+    for (int i=0; i<N_BLOCK; i++)
+    {
+        iv[i]=rand();
     }
     memcpy(enc_cat, iv, N_BLOCK);
 

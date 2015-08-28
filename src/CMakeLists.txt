@@ -5,7 +5,6 @@ set(C-SOURCES
     commander.c
     jsmn.c
     memory.c
-    random.c
     sha2.c
     utils.c
 )
